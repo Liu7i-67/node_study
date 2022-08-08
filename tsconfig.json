@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowJs": true,
+    "target": "ES2018",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "jsx": "react",
+    "lib": ["dom", "es6", "es2016", "dom.iterable", "scripthost", "es2020"],
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceRoot": "/",
+    "sourceMap": true,
+    "inlineSources": true,
+    "outDir": "dist",
+    "baseUrl": "app",
+    "paths": {
+      "components/*": ["components/*"],
+      "containers/*": ["containers/*"],
+      "pages/*": ["pages/*"],
+      "style/*": ["style/*"],
+      "utils/*": ["utils/*"],
+      "static/*": ["static/*"],
+      "assets/*": ["assets/*"],
+      "store/*": ["redux/store/*"],
+      "action/*": ["redux/action/*"],
+      "constants/*": ["redux/constants/*"],
+      "reducers/*": ["redux/reducers/*"],
+      "database/*": ["database/*"],
+      "hooks/*": ["hooks/*"],
+      "react-virtualized/List": ["react-virtualized/dist/es/List"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "node_modules/@types/**/*.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
