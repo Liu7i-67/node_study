@@ -2,13 +2,12 @@
  * @Author: liu7i
  * @Date: 2022-08-08 17:13:34
  * @Last Modified by: liu7i
- * @Last Modified time: 2022-08-09 17:37:47
+ * @Last Modified time: 2022-08-10 10:00:03
  *
  * cheerio爬虫
  */
-
-const http = require("node:https");
-const cheerio = require("cheerio");
+import http from "node:https";
+import cheerio from "cheerio";
 
 // 即将抓取的连接
 const url = "https://wiki.52poke.com/wiki/%E6%95%B2%E9%9F%B3%E7%8C%B4";
