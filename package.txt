@@ -1,0 +1,21 @@
+/*
+ * @Author: liu7i 
+ * @Date: 2022-08-10 14:49:29 
+ * @Last Modified by: liu7i
+ * @Last Modified time: 2022-08-10 15:33:20
+ */
+
+cheerio
+用于抓取网页中的指定内容
+
+nodemon
+热更新
+
+minimist
+读取启动参数
+
+chalk@4  -- 粉笔
+美化console内容
+
+progress
+创建进度条

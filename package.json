@@ -17,11 +17,16 @@
   },
   "homepage": "https://github.com/Liu7i-67/node_study#readme",
   "dependencies": {
+    "chalk": "4",
     "cheerio": "^1.0.0-rc.12",
+    "minimist": "^1.2.6",
+    "progress": "^2.0.3",
     "typescript": "^4.7.4"
   },
   "devDependencies": {
-    "@types/node": "^18.6.4"
+    "@types/minimist": "^1.2.2",
+    "@types/node": "^18.6.4",
+    "nodemon": "^2.0.19"
   },
   "type": "module"
 }
