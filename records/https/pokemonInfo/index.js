@@ -1,14 +1,15 @@
 /*
- * @Author: liu7i
- * @Date: 2022-08-08 17:13:34
+ * @Author: liu71
+ * @Date: 2022-10-10 23:07:07
  * @Last Modified by: liu71
- * @Last Modified time: 2022-10-10 23:07:04
+ * @Last Modified time: 2022-10-10 23:55:45
  *
- * 获取神百指定url宝可梦基本信息
+ * 获取神奇宝贝图鉴信息https://www.pokemon.cn/play/pokedex
+ * 899之后需要在港服拔https://hk.portal-pokemon.com/play/pokedex
  */
 
 import axios from "axios";
-import fs from 'node:fs'
+import fs, { createWriteStream } from "node:fs";
 import http from "node:https";
 import path from "node:path";
 import cheerio from "cheerio";
@@ -17,9 +18,12 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 即将抓取的连接
-const url = "https://www.pokemon.cn/play/pokedex/001";
+// 开始抓取的编号
+const start = 899;
+// 结束抓取的编号 到N为止
+const end = 905;
 
+// 获取dom内的文本
 function getText(dom, select) {
   let text = dom(select).prop("innerText");
   if (text) {
@@ -28,22 +32,26 @@ function getText(dom, select) {
   return text;
 }
 
-function getTitle(dom, select) {
-  let text = dom(select).prop("title");
-  if (text) {
-    return text.replace(/\n/g, "");
-  }
-  return text;
-}
+// 创建一个写入流
+const ws = createWriteStream("pokemonList2.json");
 
-function replaceStr(str) {
-  if (str) {
-    return str.replace(/\n/g, "");
-  }
-  return str;
-}
+// // 将网页内容写入文件
+// const writeFn = (index) => {
+//   console.log("还剩", pokemonListText.length, "条待写入");
+//   if (index > end) {
+//     console.log("写入完毕");
+//     ws.write("]", () => {
+//       ws.close();
+//     });
+//     return;
+//   }
 
-function getData(str) {
+//   const item = pokemonListText.splice(0, 1)[0];
+//   ws.write(item, writeFn);
+// };
+
+// 抓取网页内容
+function getData(str, index) {
   const $ = cheerio.load(str);
   const obj = {};
   // 名称
@@ -82,41 +90,50 @@ function getData(str) {
   //   sDef: getText($, "tr.bgl-特防 th div:nth-child(2)"),
   //   speed: getText($, "tr.bgl-速度 th div:nth-child(2)"),
   // };
-  console.log("-------------------宝可梦信息-----------------");
-  console.log(obj);
+  console.log(`开始处理${obj.name}的数据`);
 
   const href = obj.img;
-  try { 
-    const target_path = path.resolve(
-      __dirname,
-      `./image/${obj.no}.png`
-    );
+  try {
+    const target_path = path.resolve(__dirname, `./image/${obj.no}.png`);
     console.log("target_path:", target_path);
     axios.get(href, { responseType: "stream" }).then((res) => {
       res.data.pipe(fs.createWriteStream(target_path));
-      console.log("图片保存成功");
+      console.log(`${obj.name}的图片保存成功`);
+      ws.write(`${JSON.stringify(obj)},`, () => read(index + 1));
     });
   } catch (e) {
-    console.log("写入数据失败:", e);
+    console.log(`${obj.name}的图片保存失败`, e);
   }
 }
 
-console.log("数据读取...");
+function read(index) {
+  if (index > end) {
+    console.log("----数据抓取完毕----");
+    // 关闭文件流
+    ws.close();
+    return;
+  }
+  // 即将抓取的连接
+  const url = `https://hk.portal-pokemon.com/play/pokedex/${("000" + index).slice(
+    -3
+  )}`;
+  // 发起请求
+  http.get(url, function (res) {
+    let str = "";
+    // 绑定方法获取网页内容
+    res.on("data", function (chunk) {
+      str += chunk;
+    });
+    // 输入获取完毕
+    res.on("end", function () {
+      try {
+        getData(str, index);
+      } catch (error) {
+        console.log("---read-error:", error);
+      }
+    });
+  });
+}
 
-http.get(url, function (res) {
-  let str = "";
-  // 绑定方法获取网页内容
-  res.on("data", function (chunk) {
-    str += chunk;
-  });
-  // 输入获取完毕
-  res.on("end", function () {
-    console.log("数据处理...");
-    try {
-      getData(str);
-    } catch (error) {
-      console.log("-------------error----------------");
-      console.log(error);
-    }
-  });
-});
+// 开始抓取
+read(start);
